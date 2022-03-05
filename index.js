@@ -1,7 +1,7 @@
 import { isAbsolute, relative, resolve } from "path"
 
 // rewrite all imports relative to the output directory
-export function rewriteRelativeImports(outputDir, { noParentPaths = false } = {}) {
+export function rewriteRelativeImports(outputDir, { mustContainPaths = false } = {}) {
   outputDir = resolve(outputDir)
   return ({ context: importDir, request: importPath }, callback) => {
     const importAbsolutePath = resolve(importDir, importPath)
@@ -12,10 +12,10 @@ export function rewriteRelativeImports(outputDir, { noParentPaths = false } = {}
     if (isAbsolute(newPath)) {
       return undefined
     }
+    if (mustContainPaths && newPath.startsWith("..")) {
+      return undefined
+    }
     if (newPath.startsWith(".")) {
-      if (newPath.startsWith("..") && noParentPaths) {
-        throw new Error(`path backs out of output directory: ${newPath}`)
-      }
       // this also includes new paths starting with ..
       return callback(null, `module ${newPath}`)
     }

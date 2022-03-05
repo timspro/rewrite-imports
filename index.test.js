@@ -17,9 +17,4 @@ const rewriteTest = autotest(rewriteRelativeImports)
 rewriteTest("./output", "./a")("module ../a")
 rewriteTest("./output", "./output/b")("module ./b")
 
-const errorObject = expect.objectContaining({
-  message: expect.stringContaining("path backs out"),
-})
-autotest(rewriteRelativeImports, { error: true })("./output", "./a", {
-  allPathsContained: true,
-})(errorObject)
+autotest(rewriteRelativeImports)("./output", "./a", { mustContainPaths: true })()
