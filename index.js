@@ -7,12 +7,15 @@ export function rewriteRelativeImports(outputDir, { mustContainPaths = false } =
     const importAbsolutePath = resolve(importDir, importPath)
     const newPath = relative(outputDir, importAbsolutePath)
     if (!newPath) {
+      callback()
       return undefined
     }
     if (isAbsolute(newPath)) {
+      callback()
       return undefined
     }
     if (mustContainPaths && newPath.startsWith("..")) {
+      callback()
       return undefined
     }
     if (newPath.startsWith(".")) {
