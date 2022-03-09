@@ -1,7 +1,7 @@
 import { isAbsolute, relative, resolve } from "path"
 
 // rewrite all imports relative to the output directory
-export function rewriteRelativeImports(outputDir, { mustContainPaths = false } = {}) {
+export function rewriteRelativeImports(outputDir, { mustContainPaths = true } = {}) {
   outputDir = resolve(outputDir)
   return ({ context: importDir, request: importPath }, callback) => {
     const importAbsolutePath = resolve(importDir, importPath)
