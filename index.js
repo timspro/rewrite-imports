@@ -1,6 +1,5 @@
 import { isAbsolute, relative, resolve } from "path"
 
-// rewrite all imports relative to the output directory
 export function rewriteRelativeImports(outputDir) {
   outputDir = resolve(outputDir)
   return ({ context: importDir, request: importPath }, callback) => {
@@ -20,10 +19,8 @@ export function rewriteRelativeImports(outputDir) {
       return undefined
     }
     if (newPath.startsWith(".")) {
-      // this also includes new paths starting with ..
       return callback(null, `module ${newPath}`)
     }
-    // if both paths are in the same directory, relative() returns the filename or ""
     const sameDirPath = `./${newPath}`
     return callback(null, `module ${sameDirPath}`)
   }
