@@ -14,7 +14,9 @@ function before(outputDir, importPath, options) {
 
 const autotest = factory({ before, consume: consume2Iterables })
 const rewriteTest = autotest(rewriteRelativeImports)
-rewriteTest("./output", "./a")("module ../a")
+rewriteTest("./output", "./a")()
 rewriteTest("./output", "./output/b")("module ./b")
 
-autotest(rewriteRelativeImports)("./output", "./a", { mustContainPaths: true })()
+autotest(rewriteRelativeImports)("./output", "./a", { rewriteAllRelative: true })(
+  "module ../a"
+)
