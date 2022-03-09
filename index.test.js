@@ -16,7 +16,5 @@ const autotest = factory({ before, consume: consume2Iterables })
 const rewriteTest = autotest(rewriteRelativeImports)
 rewriteTest("./output", "./a")()
 rewriteTest("./output", "./output/b")("module ./b")
-
-autotest(rewriteRelativeImports)("./output", "./a", { rewriteAllRelative: true })(
-  "module ../a"
-)
+rewriteTest("./output", "./output/b/c/d")("module ./b/c/d")
+rewriteTest("./output", "./output/b/../d")("module ./d")
