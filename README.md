@@ -12,7 +12,7 @@ import { rewriteRelativeImports } from "@tim-code/rewrite-imports"
   externals: [
     // likely want to exclude some imports from being kept
     ...,
-    rewriteRelativeImports(outputDirectory, { rewriteAllRelative: false }) // default
+    rewriteRelativeImports(outputDirectory, { rewriteAllRelative: true }) // default
   ],
 ```
 
