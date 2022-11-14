@@ -4,6 +4,12 @@ Out of the box, webpack can be configured to keep `import` statements in a built
 
 This package will rewrite imports that reference code contained within the output directory so that they are correct when bundled. Other relative imports will not be kept and will be bundled by webpack as normal.
 
+## Use Case
+
+Suppose you have two JavaScript repositories: a web app and a component library. You want to be able to update the component library while working on the web app in real-time and want to avoid having to publish a NPM package whenever there is a change to the component library. You could have webpack watch both repositories and rebundle when there are changes in either. However, if your component library is large (or has large dependencies) this will slow down webpack's build significantly. Additionally, it's unclear how the web app should import the component library in terms of a path.
+
+It would be great if you could use two separate webpack processes and place both bundles in the same output directory. Then, when one repository changes, only one repository's code will be rebundled. However, to do this, Webpack needs to be instructed how to rewrite import paths relative to the output directory.
+
 ## Example
 
 `webpack.config.js`:
@@ -12,13 +18,17 @@ This package will rewrite imports that reference code contained within the outpu
 const projectDir = dirname(fileURLToPath(import.meta.url))
 const outputDir = `${projectDir}/dist`
 export default {
-  entry: `./frontend/index.js`,
+  entry: `${projectDir}/frontend/index.js`,
   output: {
     filename: `bundle.js`,
     path: `${outputDir}`,
     libraryTarget: "module",
     environment: { module: true },
   },
+  experiments: {
+    outputModule: true,
+  },
+  externals: [rewriteRelativeImports(outputDir)],
 }
 ```
 
@@ -36,6 +46,8 @@ would become:
 import _ from "./lodash.js"
 ```
 
+This implies that there is a "lodash.js" file in the "dist" folder. Note that this library does not attempt to check that.
+
 ### Note
 
 If the import references some code outside the output directory, for example:
@@ -44,6 +56,9 @@ If the import references some code outside the output directory, for example:
 
 ```js
 import React from "../lib/react.js"
+```
+
+```js
 import { median } from "./helpers.js"
 ```
 
